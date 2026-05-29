@@ -7,7 +7,7 @@
 ## 功能特点
 
 - 自动选择股票分析技能
-- 支持综合分析与技术分析两类 Skill
+- 支持综合分析、技术分析、Tushare 数据研究三类 Skill
 - 支持 OpenAI Responses API 与 Chat Completions API
 - 支持 OpenAI 兼容中转站或其他兼容模型
 - 通过 `.env` 灵活配置模型、API Key、base_url、技能目录
@@ -27,8 +27,12 @@
 ├── skills/
 │   ├── stock-analyst/
 │   │   └── SKILL.md             # 股票综合分析 Skill
-│   └── stock-price-analyst/
-│       └── SKILL.md             # 股价技术分析 Skill
+│   ├── stock-price-analyst/
+│   │   └── SKILL.md             # 股价技术分析 Skill
+│   └── tushare-data/
+│       ├── SKILL.md             # Tushare 数据研究 Skill
+│       ├── references/          # Tushare 接口参考
+│       └── scripts/             # Tushare 示例脚本
 ├── utils/
 │   └── logger.py                # 日志配置
 ├── .env.example                 # 配置模板
@@ -61,6 +65,7 @@ AGENT_LLM_MODE=responses
 AGENT_API_KEY=your-api-key
 AGENT_BASE_URL=https://api.openai.com/v1
 AGENT_SKILLS_DIR=skills
+TUSHARE_TOKEN=your-tushare-token
 ```
 
 如果使用兼容 Chat Completions 的模型或中转站，例如 MiMo 类接口：
@@ -105,6 +110,18 @@ python3 main.py --skills-dir ./skills
 ```text
 某股票当前价 18.6 元，近 20 日从 15 元涨到 19.2 元，现在回落到 18.6 元，成交量缩小。帮我分析走势和操作思路。
 ```
+
+数据研究类：
+
+```text
+帮我用 Tushare 拉一下贵州茅台近一年的日线行情，并说明应该重点看哪些字段。
+```
+
+```text
+帮我筛一下最近几个季度 ROE 较高、负债率较低的 A 股公司，输出研究流程和可用接口。
+```
+
+注意：当前 Agent 已经能路由到 `tushare-data` Skill，但默认仍是提示词执行框架，不会自动运行本地 `scripts/` 代码。真实取数需要配置 `TUSHARE_TOKEN`，并在后续增加工具执行层或手动运行 Skill 中的示例脚本。
 
 ## Skill 扩展
 
